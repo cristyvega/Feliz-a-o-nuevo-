@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feliz Año Nuevo</title>
+  <style>
+    canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+    body {
+      margin: 0;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      background: radial-gradient(circle at top, #111 0%, #000 70%);
+      color: white;
+      text-align: center;
+    }
+    .container {
+      max-width: 420px;
+      margin: auto;
+      padding: 20px 10px 90px;
+      border: 8px solid gold;
+      background: rgba(0,0,0,0.6);
+    }
+    h1 {
+      font-size: 34px;
+      margin: 10px 0;
+      background: linear-gradient(90deg, gold, orange, yellow, gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sub {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #ffd700;
+    }
+    .timer {
+      font-size: 18px;
+      color: #ffeb3b;
+      margin-bottom: 20px;
+    }
+    .feliz {
+      font-size: 46px;
+      font-weight: bold;
+      color: gold;
+    }
+    .anio {
+      font-size: 52px;
+      font-weight: bold;
+      color: #ff9800;
+    }
+    .imagen-personal img {
+      width: 230px;
+      border-radius: 20px;
+      margin-top: 20px;
+      box-shadow: 0 0 20px gold;
+    }
+    .input-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+    }
+    .input-bar input[type="file"] {
+      flex: 1;
+      padding: 14px;
+      background: #333;
+      color: white;
+      border: none;
+    }
+    .input-bar input[type="text"] {
+      flex: 1;
+      padding: 14px;
+      background: #ff9800;
+      color: black;
+      border: none;
+    }
+    .input-bar button {
+      padding: 14px 18px;
+      font-size: 16px;
+      border: none;
+      background: gold;
+      color: black;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fireworks"></canvas>
+  <div class="container">
+    <h1 id="nombre">CRISTY</h1>
+    <div class="sub">te desea un</div>
+    <div class="timer" id="contador"></div><div class="feliz">Feliz</div>
+<div class="año">Año Nuevo</div>
+
+<div class="imagen-personal">
+  <img id="fotoPersonal" src="" alt="Tu imagen" />
+</div>
+
+  </div>  <audio id="musica" loop>
+    <source src="musica" type="audio/mpeg">
+  </audio>  <div class="input-bar">
+    <input type="file" accept="image/*" onchange="cambiarImagen(event)">
+    <input type="text" id="inputNombre" placeholder="Introduce tu nombre aquÃ­..." />
+    <button onclick="cambiarNombre()">Ir</button>
+  </div>  <script>
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+    window.addEventListener('resize',resize);resize();
+    const fireworks=[];
+    function Firework(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height/2;this.r=0;this.max=30+Math.random()*30;this.color=`hsl(${Math.random()*360},100%,60%)`}
+    function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);fireworks.forEach((f,i)=>{f.r+=1;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.strokeStyle=f.color;ctx.stroke();if(f.r>f.max)fireworks.splice(i,1)});requestAnimationFrame(draw)}
+    setInterval(()=>fireworks.push(new Firework()),600);draw();
+    const objetivo = new Date(new Date().getFullYear() + 1, 0, 1);
+
+    function actualizarContador() {
+      const ahora = new Date();
+      let diff = objetivo - ahora;
+
+      if (diff <= 0) {
+        document.getElementById('contador').innerText = 'Â¡Feliz AÃ±o Nuevo! ðŸŽ†';
+        return;
+      }
+
+      const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+      diff %= 1000 * 60 * 60 * 24;
+      const horas = Math.floor(diff / (1000 * 60 * 60));
+      diff %= 1000 * 60 * 60;
+      const minutos = Math.floor(diff / (1000 * 60));
+      diff %= 1000 * 60;
+      const segundos = Math.floor(diff / 1000);
+
+      document.getElementById('contador').innerText =
+        `${dias} dia(s), ${horas} h, ${minutos} min, ${segundos} seg`;
+    }
+
+    setInterval(actualizarContador, 1000);
+    actualizarContador();
+
+    function cambiarNombre() {
+      const nombre = document.getElementById('inputNombre').value.trim();
+      if (nombre) {
+        document.getElementById('nombre').innerText = nombre.toUpperCase();
+      }
+    }
+
+    function cambiarImagen(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('fotoPersonal').src = e.target.result;
+          document.getElementById('musica').play();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  </script></body>
+</html>
